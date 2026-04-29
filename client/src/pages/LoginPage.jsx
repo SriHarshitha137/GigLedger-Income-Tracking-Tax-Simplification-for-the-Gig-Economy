@@ -64,7 +64,7 @@ const LoginPage = () => {
           <div className="mb-6">
             <p className="text-sm font-semibold text-blue-700">Welcome back</p>
             <h1 className="mt-1 text-[30px] font-bold text-slate-900">Login to GigLedger</h1>
-            <div className="mt-4 flex flex-wrap gap-2">{['Swiggy', 'Zomato', 'Ola', 'Uber'].map((item) => <span key={item} className="pill bg-slate-100 text-slate-700">{item}</span>)}</div>
+            
           </div>
           {errors.form && <p className="mb-4 rounded-2xl border border-red-100 bg-red-50 p-3 text-sm text-red-700">{errors.form}</p>}
           <label className="block text-sm font-semibold text-slate-700">
