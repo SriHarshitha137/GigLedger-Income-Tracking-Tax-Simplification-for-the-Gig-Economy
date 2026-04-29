@@ -42,6 +42,7 @@ All in one place
 6. Run `npm run dev`.
 7. Open `http://localhost:5173`.
 8.  IMPORTANT : Test login: phone `9876543210`, password `test123` Name:'Ravi Kumar'
+9. Advised to open in laptop for better features and UI
 
 ## API Endpoints
 
