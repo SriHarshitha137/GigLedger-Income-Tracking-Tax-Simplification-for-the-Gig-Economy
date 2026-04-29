@@ -97,11 +97,16 @@ gigledger/
 The UI is as follows ,it is present in both Dark and Light mode
 
 This is when it is in the dark mode
+
 <img width="1351" height="601" alt="image" src="https://github.com/user-attachments/assets/51097c50-af31-41ad-9fd5-44c798b2c4f6" />
+
 Authentication is required and validation also
+
 <img width="1351" height="604" alt="image" src="https://github.com/user-attachments/assets/d8e33068-ed80-4dfb-b2d8-64d335027517" />
 <img width="1353" height="614" alt="image" src="https://github.com/user-attachments/assets/e057353a-da7f-46a9-ac91-97af0666221c" />
+
 Authentication is required
+
 <img width="1360" height="604" alt="image" src="https://github.com/user-attachments/assets/27c67459-a826-4764-9d2d-aceb7b37e3cc" />
 <img width="1358" height="609" alt="image" src="https://github.com/user-attachments/assets/20006fa3-b6c0-4add-83da-613115317181" />
 
@@ -113,20 +118,29 @@ Authentication is required
 <img width="1364" height="604" alt="image" src="https://github.com/user-attachments/assets/36c70a37-1b19-4571-ad6d-99fc957a06ac" />
 <img width="1365" height="604" alt="image" src="https://github.com/user-attachments/assets/566308f4-9977-480e-967b-d338de0c26f4" />
 <img width="1360" height="606" alt="image" src="https://github.com/user-attachments/assets/36127e71-cd57-4aa2-ab0d-1e3e90412822" />
+
 Particularly if i need a vehicle expenses it is as follows
+
 <img width="1360" height="600" alt="image" src="https://github.com/user-attachments/assets/0134298a-5663-4d50-8551-553ce050a4b3" />
+
 Analytics section
+
 <img width="1365" height="606" alt="image" src="https://github.com/user-attachments/assets/ad4decb1-5c72-484c-9980-ebc3a4daf4bf" />
 <img width="1365" height="607" alt="image" src="https://github.com/user-attachments/assets/87c0fb4a-e3f1-4102-b656-614392293792" />
 <img width="1365" height="609" alt="image" src="https://github.com/user-attachments/assets/0629f38e-45e4-4bf4-87d2-b38933214f4a" />
 
 Income proof
+
 <img width="1364" height="595" alt="image" src="https://github.com/user-attachments/assets/7f8e2313-92c7-4f7e-a203-c603706d8c54" />
 
 Certificate will be as follows(it will be downloaded in the form of pdf)
+
 <img width="797" height="540" alt="image" src="https://github.com/user-attachments/assets/27a6e53a-cc0f-4df0-a924-d1e354e9a7d1" />
 <img width="792" height="540" alt="image" src="https://github.com/user-attachments/assets/47359d3c-b3e1-42ec-beca-08cfb470d1d4" />
-THE BELOW THINGS ARE IN THE LIGHT MODE FORM
+
+THE BELOW THINGS ARE IN THE LIGHT MODE 
+
+
 <img width="1349" height="600" alt="image" src="https://github.com/user-attachments/assets/61b63835-ca83-49b7-a218-db75ec6fbbaf" />
 <img width="1330" height="612" alt="image" src="https://github.com/user-attachments/assets/33341cee-2c2e-4cfe-9353-e1727b1ce8ab" />
 <img width="1365" height="606" alt="image" src="https://github.com/user-attachments/assets/b04a39eb-893c-4987-a659-38a5febbe058" />
