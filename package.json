@@ -4,6 +4,7 @@
   "private": true,
   "description": "Full-stack income tracker for Indian gig workers.",
   "scripts": {
+    "start":"node server.js",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "server": "cd server && node --watch server.js",
     "client": "cd client && npm run dev",

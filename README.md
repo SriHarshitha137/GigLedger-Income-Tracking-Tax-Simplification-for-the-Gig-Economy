@@ -151,20 +151,3 @@ THE BELOW THINGS ARE IN THE LIGHT MODE
 <img width="1365" height="610" alt="image" src="https://github.com/user-attachments/assets/a1ab2b01-45fd-4014-a2c7-493fbbca6ea1" />
 <img width="1348" height="599" alt="image" src="https://github.com/user-attachments/assets/000860ff-b710-40e3-b8f2-af4a242b8d5b" />
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
