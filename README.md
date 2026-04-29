@@ -94,3 +94,11 @@ gigledger/
 ├── package.json
 └── README.md
 ```
+
+
+
+
+
+<img width="1356" height="599" alt="image" src="https://github.com/user-attachments/assets/aa141f81-d554-4f10-850c-bacc54e71a07" />
+
+
