@@ -11,11 +11,25 @@ const OnboardingPage = () => {
   const [platforms, setPlatforms] = useState([]);
   const [details, setDetails] = useState({ vehicleType: 'bike', city: '', workingSince: '' });
   const [error, setError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState({});
   const [saving, setSaving] = useState(false);
 
+  const validate = () => {
+    const nextErrors = {};
+    if (!platforms.length) nextErrors.platforms = 'Select at least one platform';
+    if (!details.vehicleType) nextErrors.vehicleType = 'Vehicle type is required';
+    if (!details.city.trim()) nextErrors.city = 'City is required';
+    if (!details.workingSince) nextErrors.workingSince = 'Working since date is required';
+    if (Object.keys(nextErrors).length) setError('All fields are required');
+    setFieldErrors(nextErrors);
+    return Object.keys(nextErrors).length === 0;
+  };
+
   const complete = async () => {
+    if (!validate()) return;
     setSaving(true);
     setError('');
+    setFieldErrors({});
     try {
       const payload = { ...details, platforms: platforms.map((name) => ({ name })) };
       const { data } = await api.patch('/api/auth/onboarding', payload);
@@ -23,6 +37,11 @@ const OnboardingPage = () => {
       localStorage.setItem('gigledger_user', JSON.stringify(data.user));
       navigate('/dashboard');
     } catch (err) {
+      const nextErrors = {};
+      (err.response?.data?.errors || []).forEach((item) => {
+        nextErrors[item.path] = item.msg;
+      });
+      setFieldErrors(nextErrors);
       setError(err.response?.data?.message || 'Could not save onboarding');
     } finally {
       setSaving(false);
@@ -42,13 +61,14 @@ const OnboardingPage = () => {
           <div className="mt-6">
             <h2 className="font-semibold text-slate-900">Select platforms</h2>
             <div className="mt-3"><PlatformSelector value={platforms} onChange={setPlatforms} /></div>
+            {fieldErrors.platforms && <p className="mt-2 text-xs text-red-600">{fieldErrors.platforms}</p>}
             <button onClick={() => setStep(2)} disabled={!platforms.length} className="btn-primary mt-6">Continue</button>
           </div>
         ) : (
           <div className="mt-6 space-y-4">
-            <label className="block text-sm font-semibold text-slate-700">Vehicle type<select value={details.vehicleType} onChange={(e) => setDetails({ ...details, vehicleType: e.target.value })} className="field mt-2 w-full"><option value="bike">Bike</option><option value="car">Car</option><option value="bicycle">Bicycle</option><option value="none">None</option></select></label>
-            <label className="block text-sm font-semibold text-slate-700">City<input value={details.city} onChange={(e) => setDetails({ ...details, city: e.target.value })} className="field mt-2 w-full" required /></label>
-            <label className="block text-sm font-semibold text-slate-700">Working since<input type="date" value={details.workingSince} onChange={(e) => setDetails({ ...details, workingSince: e.target.value })} className="field mt-2 w-full" /></label>
+            <label className="block text-sm font-semibold text-slate-700">Vehicle type<select value={details.vehicleType} onChange={(e) => setDetails({ ...details, vehicleType: e.target.value })} className={`field mt-2 w-full ${fieldErrors.vehicleType ? 'field-error' : ''}`}><option value="">Select vehicle</option><option value="bike">Bike</option><option value="car">Car</option><option value="bicycle">Bicycle</option><option value="none">None</option></select>{fieldErrors.vehicleType && <span className="mt-1 block text-xs text-red-600">{fieldErrors.vehicleType}</span>}</label>
+            <label className="block text-sm font-semibold text-slate-700">City<input value={details.city} onChange={(e) => setDetails({ ...details, city: e.target.value })} className={`field mt-2 w-full ${fieldErrors.city ? 'field-error' : ''}`} />{fieldErrors.city && <span className="mt-1 block text-xs text-red-600">{fieldErrors.city}</span>}</label>
+            <label className="block text-sm font-semibold text-slate-700">Working since<input type="date" value={details.workingSince} onChange={(e) => setDetails({ ...details, workingSince: e.target.value })} className={`field mt-2 w-full ${fieldErrors.workingSince ? 'field-error' : ''}`} />{fieldErrors.workingSince && <span className="mt-1 block text-xs text-red-600">{fieldErrors.workingSince}</span>}</label>
             <div className="flex gap-3"><button onClick={() => setStep(1)} className="btn-secondary">Back</button><button onClick={complete} disabled={saving} className="btn-primary">{saving ? 'Saving...' : 'Finish setup'}</button></div>
           </div>
         )}

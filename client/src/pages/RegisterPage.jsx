@@ -7,26 +7,45 @@ const RegisterPage = () => {
   const { user, login } = useAuth();
   const navigate = useNavigate();
   const [form, setForm] = useState({ name: '', phone: '', password: '', confirmPassword: '' });
-  const [error, setError] = useState('');
+  const [errors, setErrors] = useState({});
   const [saving, setSaving] = useState(false);
 
   if (user) return <Navigate to="/dashboard" replace />;
 
+  const validate = () => {
+    const nextErrors = {};
+    if (!form.name.trim() || !form.phone.trim() || !form.password || !form.confirmPassword) {
+      nextErrors.form = 'All fields are required';
+    }
+    if (!form.name.trim()) nextErrors.name = 'Name is required';
+    else if (form.name.trim().length < 6) nextErrors.name = 'Name must be at least 6 characters';
+    if (!form.phone.trim()) nextErrors.phone = 'Phone is required';
+    else if (!/^[0-9]{10}$/.test(form.phone.trim())) nextErrors.phone = 'Phone must be exactly 10 digits';
+    if (!form.password) nextErrors.password = 'Password is required';
+    else if (form.password.length < 8) nextErrors.password = 'Password must be at least 8 characters';
+    else if (!/[!@#$%^&*(),.?":{}|<>_\-+=/\\[\]`;']/.test(form.password)) nextErrors.password = 'Password must include at least one special character';
+    if (!form.confirmPassword) nextErrors.confirmPassword = 'Confirm password is required';
+    else if (form.password !== form.confirmPassword) nextErrors.confirmPassword = 'Passwords do not match';
+    setErrors(nextErrors);
+    return Object.keys(nextErrors).length === 0;
+  };
+
   const submit = async (event) => {
     event.preventDefault();
-    if (form.password !== form.confirmPassword) {
-      setError('Passwords do not match');
-      return;
-    }
+    if (!validate()) return;
     setSaving(true);
-    setError('');
+    setErrors({});
     try {
       const { data } = await api.post('/api/auth/register', { name: form.name, phone: form.phone, password: form.password });
       login(data.token, data.user);
       navigate('/onboarding');
     } catch (err) {
-      const first = err.response?.data?.errors?.[0]?.msg;
-      setError(first || err.response?.data?.message || 'Registration failed');
+      const nextErrors = {};
+      (err.response?.data?.errors || []).forEach((item) => {
+        nextErrors[item.path] = item.msg;
+      });
+      if (err.response?.data?.message) nextErrors.form = err.response.data.message;
+      setErrors(Object.keys(nextErrors).length ? nextErrors : { form: 'Registration failed' });
     } finally {
       setSaving(false);
     }
@@ -45,17 +64,17 @@ const RegisterPage = () => {
         <div className="rider-scene" />
       </section>
       <section className="flex items-center justify-center p-4 md:p-10">
-        <form onSubmit={submit} className="app-card w-full max-w-xl">
+        <form onSubmit={submit} noValidate className="app-card w-full max-w-xl">
           <p className="text-sm font-semibold text-blue-700">Step 1 of 2</p>
           <h1 className="mt-1 text-[30px] font-bold text-slate-900">Create your account</h1>
           <p className="mt-2 text-sm text-slate-500">Your dashboard will calculate monthly performance and loan-readiness signals.</p>
           <div className="mt-5 h-2 rounded-full bg-slate-100"><div className="h-2 w-1/2 rounded-full bg-blue-600" /></div>
-          {error && <p className="mt-4 rounded-2xl border border-red-100 bg-red-50 p-3 text-sm text-red-700">{error}</p>}
+          {errors.form && <p className="mt-4 rounded-2xl border border-red-100 bg-red-50 p-3 text-sm text-red-700">{errors.form}</p>}
           <div className="mt-5 grid gap-4 md:grid-cols-2">
-            <label className="text-sm font-semibold text-slate-700">Full name<input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="field mt-2 w-full" required /></label>
-            <label className="text-sm font-semibold text-slate-700">Phone number<input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="field mt-2 w-full" required /></label>
-            <label className="text-sm font-semibold text-slate-700">Password<input type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} className="field mt-2 w-full" required /></label>
-            <label className="text-sm font-semibold text-slate-700">Confirm password<input type="password" value={form.confirmPassword} onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })} className="field mt-2 w-full" required /></label>
+            <label className="text-sm font-semibold text-slate-700">Full name<input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className={`field mt-2 w-full ${errors.name ? 'field-error' : ''}`} />{errors.name && <span className="mt-1 block text-xs text-red-600">{errors.name}</span>}</label>
+            <label className="text-sm font-semibold text-slate-700">Phone number<input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value.replace(/\D/g, '').slice(0, 10) })} className={`field mt-2 w-full ${errors.phone ? 'field-error' : ''}`} />{errors.phone && <span className="mt-1 block text-xs text-red-600">{errors.phone}</span>}</label>
+            <label className="text-sm font-semibold text-slate-700">Password<input type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} className={`field mt-2 w-full ${errors.password ? 'field-error' : ''}`} />{errors.password && <span className="mt-1 block text-xs text-red-600">{errors.password}</span>}</label>
+            <label className="text-sm font-semibold text-slate-700">Confirm password<input type="password" value={form.confirmPassword} onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })} className={`field mt-2 w-full ${errors.confirmPassword ? 'field-error' : ''}`} />{errors.confirmPassword && <span className="mt-1 block text-xs text-red-600">{errors.confirmPassword}</span>}</label>
           </div>
           <div className="mt-4 grid gap-3 md:grid-cols-2">
             <div><p className="text-xs font-semibold text-slate-500">Password strength</p><div className="mt-2 h-2 rounded-full bg-slate-100"><div className={`h-2 rounded-full ${form.password.length >= 8 ? 'w-full bg-green-600' : 'w-1/2 bg-orange-500'}`} /></div></div>

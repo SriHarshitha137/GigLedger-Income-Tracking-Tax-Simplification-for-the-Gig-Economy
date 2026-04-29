@@ -8,7 +8,7 @@ const LoginPage = () => {
   const { user, login } = useAuth();
   const navigate = useNavigate();
   const [form, setForm] = useState({ phone: '', password: '' });
-  const [error, setError] = useState('');
+  const [errors, setErrors] = useState({});
   const [saving, setSaving] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -16,15 +16,26 @@ const LoginPage = () => {
 
   const submit = async (event) => {
     event.preventDefault();
+    const nextErrors = {};
+    if (!form.phone.trim() || !form.password) nextErrors.form = 'All fields are required';
+    if (!form.phone.trim()) nextErrors.phone = 'Phone is required';
+    if (!form.password) nextErrors.password = 'Password is required';
+    setErrors(nextErrors);
+    if (Object.keys(nextErrors).length) return;
+
     setSaving(true);
-    setError('');
+    setErrors({});
     try {
       const { data } = await api.post('/api/auth/login', form);
       login(data.token, data.user);
       navigate(data.user.onboardingDone ? '/dashboard' : '/onboarding');
     } catch (err) {
-      const first = err.response?.data?.errors?.[0]?.msg;
-      setError(first || err.response?.data?.message || 'Login failed');
+      const next = {};
+      (err.response?.data?.errors || []).forEach((item) => {
+        next[item.path] = item.msg;
+      });
+      next.form = err.response?.data?.message || next.form || 'Login failed';
+      setErrors(next);
     } finally {
       setSaving(false);
     }
@@ -49,26 +60,28 @@ const LoginPage = () => {
         </div>
       </section>
       <section className="flex items-center justify-center p-4 md:p-10">
-        <form onSubmit={submit} className="app-card w-full max-w-md">
+        <form onSubmit={submit} noValidate className="app-card w-full max-w-md">
           <div className="mb-6">
             <p className="text-sm font-semibold text-blue-700">Welcome back</p>
             <h1 className="mt-1 text-[30px] font-bold text-slate-900">Login to GigLedger</h1>
             <div className="mt-4 flex flex-wrap gap-2">{['Swiggy', 'Zomato', 'Ola', 'Uber'].map((item) => <span key={item} className="pill bg-slate-100 text-slate-700">{item}</span>)}</div>
           </div>
-          {error && <p className="mb-4 rounded-2xl border border-red-100 bg-red-50 p-3 text-sm text-red-700">{error}</p>}
+          {errors.form && <p className="mb-4 rounded-2xl border border-red-100 bg-red-50 p-3 text-sm text-red-700">{errors.form}</p>}
           <label className="block text-sm font-semibold text-slate-700">
             Phone number
             <div className="mt-2 flex overflow-hidden rounded-[10px] border border-slate-200 bg-white focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-100">
               <span className="flex h-12 items-center border-r border-slate-200 px-3 text-sm font-semibold text-slate-500">+91</span>
-              <input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="h-12 flex-1 px-3 text-sm outline-none" required />
+              <input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value.replace(/\D/g, '').slice(0, 10) })} className="h-12 flex-1 px-3 text-sm outline-none" />
             </div>
+            {errors.phone && <span className="mt-1 block text-xs text-red-600">{errors.phone}</span>}
           </label>
           <label className="mt-4 block text-sm font-semibold text-slate-700">
             Password
             <div className="mt-2 flex items-center rounded-[10px] border border-slate-200 bg-white pr-2 focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-100">
-              <input type={showPassword ? 'text' : 'password'} value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} className="h-12 flex-1 px-3 text-sm outline-none" required />
+              <input type={showPassword ? 'text' : 'password'} value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} className="h-12 flex-1 px-3 text-sm outline-none" />
               <button type="button" onClick={() => setShowPassword(!showPassword)} className="rounded-md p-2 text-slate-500 hover:bg-slate-100">{showPassword ? <EyeOff size={18} /> : <Eye size={18} />}</button>
             </div>
+            {errors.password && <span className="mt-1 block text-xs text-red-600">{errors.password}</span>}
           </label>
           <div className="mt-3 text-right"><button type="button" className="text-sm font-semibold text-blue-700">Forgot password?</button></div>
           <button disabled={saving} className="btn-primary mt-5 w-full">{saving ? <span className="mx-auto block h-5 w-5 animate-spin rounded-full border-2 border-white/40 border-t-white" /> : 'Sign in'}</button>

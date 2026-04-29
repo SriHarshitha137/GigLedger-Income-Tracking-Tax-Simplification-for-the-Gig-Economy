@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const Expense = require('../models/Expense');
 const IncomeEntry = require('../models/IncomeEntry');
+const { calculateLoanEligibility } = require('../services/loanService');
 const { calculateTax, getFinancialYearWindow } = require('../services/taxEngine');
 
 const router = express.Router();
@@ -139,6 +140,15 @@ router.get('/earning-heatmap', async (req, res, next) => {
       };
     });
 
+    return res.json({ success: true, data });
+  } catch (err) {
+    return next(err);
+  }
+});
+
+router.get('/loan-eligibility', async (req, res, next) => {
+  try {
+    const data = await calculateLoanEligibility(req.userId, req.query.type);
     return res.json({ success: true, data });
   } catch (err) {
     return next(err);
