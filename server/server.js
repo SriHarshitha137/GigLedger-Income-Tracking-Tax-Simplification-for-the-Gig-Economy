@@ -15,7 +15,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 app.use(
   cors({
-    origin: 'https://gig-ledger-income-tracking-tax-simp.vercel.app',
+    origin: process.env.CLIENT_URL ,
     credentials: true
   })
 );
