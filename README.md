@@ -41,7 +41,7 @@ All in one place
 5. Run `npm run seed` to load optional test data.
 6. Run `npm run dev`.
 7. Open `http://localhost:5173`.
-8. Test login: phone `9876543210`, password `test123`.
+8.  IMPORTANT : Test login: phone `9876543210`, password `test123` Name:'Ravi Kumar'
 
 ## API Endpoints
 
